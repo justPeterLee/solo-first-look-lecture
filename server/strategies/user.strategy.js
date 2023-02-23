@@ -3,10 +3,12 @@ const LocalStrategy = require('passport-local').Strategy;
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
 
+// hide
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
+// show
 passport.deserializeUser((id, done) => {
   pool
     .query('SELECT * FROM "user" WHERE id = $1', [id])
@@ -41,7 +43,11 @@ passport.use(
     pool
       .query('SELECT * FROM "user" WHERE username = $1', [username])
       .then((result) => {
+
+        // extra conditional check
         const user = result && result.rows && result.rows[0];
+
+        // comparing entered password and current password
         if (user && encryptLib.comparePassword(password, user.password)) {
           // All good! Passwords match!
           // done takes an error (null in this case) and a user
